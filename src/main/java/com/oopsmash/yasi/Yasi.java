@@ -18,11 +18,6 @@ import java.util.List;
 import java.util.Map;
 
 public class Yasi {
-    private final ASTParser parser;
-
-    public Yasi() {
-        this.parser = ASTParser.newParser(AST.JLS21);
-    }
 
     private static Map<String, List<ImportDeclaration>> findAndRemoveImports(CompilationUnit unit, ASTRewrite rewrite) {
         Map<String, List<ImportDeclaration>> imports = new HashMap<>();
@@ -66,23 +61,20 @@ public class Yasi {
         });
     }
 
-    private void setConfigs() {
-        Map<String, String> options = JavaCore.getOptions();
-        JavaCore.setComplianceOptions(JavaCore.VERSION_1_5, options);
-        this.parser.setCompilerOptions(options);
-        this.parser.setKind(ASTParser.K_COMPILATION_UNIT);
-        this.parser.setResolveBindings(true);
-        this.parser.setBindingsRecovery(true);
-        this.parser.setStatementsRecovery(true);
-        this.parser.setEnvironment(new String[] { /* classpath entries */ }, new String[] { /* source folders */ },
-                null, true);
-    }
-
-    public String sort(String source) throws BadLocationException {
+    public static String sort(String source) throws BadLocationException {
         if (source == null)
             return null;
 
-        setConfigs();
+        ASTParser parser = ASTParser.newParser(AST.JLS21);
+        Map<String, String> options = JavaCore.getOptions();
+        JavaCore.setComplianceOptions(JavaCore.VERSION_1_5, options);
+        parser.setCompilerOptions(options);
+        parser.setKind(ASTParser.K_COMPILATION_UNIT);
+        parser.setResolveBindings(true);
+        parser.setBindingsRecovery(true);
+        parser.setStatementsRecovery(true);
+        parser.setEnvironment(new String[] { /* classpath entries */ }, new String[] { /* source folders */ },
+                null, true);
         parser.setSource(source.toCharArray());
 
         CompilationUnit compilationUnit = (CompilationUnit) parser.createAST(null);

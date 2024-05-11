@@ -60,7 +60,7 @@ public class SortMojo extends AbstractMojo {
 
     private void sortFile(Path path) throws BadLocationException, IOException {
         String content = readFile(path);
-        String sorted = new Yasi().sort(content);
+        String sorted = Yasi.sort(content);
         if (sorted != null) {
             writeFile(sorted, path);
         }
